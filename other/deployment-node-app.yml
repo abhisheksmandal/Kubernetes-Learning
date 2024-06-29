@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Unique key of the Deployment instance
+  name: my-kube-test-app
+spec:
+  # 3 Pods should exist at all times.
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kube-test-app-yaml
+  template:
+    metadata:
+      labels:
+        # Apply this label to pods and default
+        # the Deployment label selector to this value
+        app: kube-test-app-yaml
+    spec:
+      containers:
+        - name: kube-test-app-yaml
+          # Run this image
+          image: abhisheksmandal/kube-test-app:02

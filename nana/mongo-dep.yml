@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deployment
+  labels:
+    app: mongodb-app # Label for deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-app # Label selector for pods controlled by this deployment
+  template:
+    metadata:
+      labels:
+        app: mongodb-app # Label for pods
+    spec:
+      containers:
+        - name: mongodb-container
+          image: mongo:latest # Replace with your container image
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: mongo-root-username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: mongo-root-password
+          # Add more container settings as needed
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+spec:
+  selector:
+    app: mongodb-app # Label selector to match pods
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: food-order-file-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: food-order-file-app
+  template:
+    metadata:
+      labels:
+        app: food-order-file-app
+    spec:
+      containers:
+        - name: food-order-file-app
+          image: abhisheksmandal/food-order-file-app:01
+          volumeMounts:
+            - name: food-orders
+              mountPath: /app/orders.txt
+      volumes:
+        - name: food-orders
+          hostPath:
+            path: /mydata/orders.txt
+            type: FileOrCreate
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-food-order-file-app
+spec:
+  ports:
+    - name: http
+      port: 8082
+      targetPort: 3000
+  selector:
+    app: food-order-file-app
+  type: LoadBalancer

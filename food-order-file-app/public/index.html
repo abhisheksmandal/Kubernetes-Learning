@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Food Order App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="card">
+        <h1>Food Order App</h1>
+        <form action="/save-order" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="order">Order:</label>
+                <textarea id="order" name="order" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="instructions">Special Instructions:</label>
+                <textarea id="instructions" name="instructions"></textarea>
+            </div>
+            <button type="submit">Place Order</button>
+        </form>
+        <button id="show-orders">Show Orders</button>
+        <div id="orders"></div>
+    </div>
+
+    <script>
+        const showOrdersBtn = document.getElementById('show-orders');
+        const ordersDiv = document.getElementById('orders');
+
+        showOrdersBtn.addEventListener('click', async () => {
+            const response = await fetch('/get-orders');
+            const data = await response.json();
+            const orders = data.orders.map(order => order.replace(/\n/g, '<br>')).join('<br><br>');
+            ordersDiv.innerHTML = `<h2>All Orders:</h2>${orders}`;
+        });
+    </script>
+</body>
+
+</html>
